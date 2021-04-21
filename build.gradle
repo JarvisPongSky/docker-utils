@@ -1,0 +1,44 @@
+plugins {
+    id "java"
+}
+
+ext {
+    jibVersion = "2.8.0"
+    lombokVersion = "1.18.16"
+
+    mysqlVersion = "8.0.22"
+
+    springBootVersion = "2.3.2.RELEASE"
+    springCloudVersion = "Hoxton.SR8"
+    springCloudAlibabaVersion = "2.2.5.RELEASE"
+
+    mybatisVersion = "2.1.4"
+    jacksonVersion = "2.11.2"
+    actuatorAdminVersion = "2.3.1"
+
+    jwtVersion = "3.12.1"
+    orikaVersion = "1.9.0"
+    logstashVersion = "6.6"
+    servletVersion = "4.0.1"
+    commonsLang3Version = "3.11"
+    apacheHttpCoreVersion = "4.4.14"
+}
+
+allprojects {
+
+    apply plugin: "idea"
+
+    sourceCompatibility = 11
+    targetCompatibility = 11
+
+    group "com.pongsky.cloud"
+    version "1.0.0"
+
+    repositories {
+        mavenLocal()
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
+        jcenter()
+    }
+
+}
