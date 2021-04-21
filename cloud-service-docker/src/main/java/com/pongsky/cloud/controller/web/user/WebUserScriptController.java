@@ -3,6 +3,7 @@ package com.pongsky.cloud.controller.web.user;
 import com.pongsky.cloud.entity.Script;
 import com.pongsky.cloud.entity.script.dto.ScriptDto;
 import com.pongsky.cloud.entity.script.dto.SearchScriptDto;
+import com.pongsky.cloud.entity.script.dto.UpdateServiceDto;
 import com.pongsky.cloud.entity.script.vo.ScriptVo;
 import com.pongsky.cloud.exception.ValidationException;
 import com.pongsky.cloud.model.dto.PageQuery;
@@ -12,6 +13,7 @@ import com.pongsky.cloud.service.ScriptService;
 import com.pongsky.cloud.utils.jwt.enums.AuthRole;
 import com.pongsky.cloud.validator.CreateGroup;
 import com.pongsky.cloud.validator.SearchGroup;
+import com.pongsky.cloud.validator.UpdateGroup;
 import com.pongsky.cloud.web.request.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -21,11 +23,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Set;
 
 /**
  * 脚本模块
@@ -99,6 +104,59 @@ public class WebUserScriptController {
         Long userId = AuthUtils.getAuthUserId(request);
         scriptService.existsByUserIdAndScriptId(userId, scriptId);
         return scriptService.query(scriptId);
+    }
+
+    /**
+     * 创建服务
+     *
+     * @param request  request
+     * @param scriptId 脚本ID
+     * @return 执行结果
+     * @throws IOException          IOException
+     * @throws InterruptedException InterruptedException
+     */
+    @PutMapping("/{scriptId:[0-9]+}/createService")
+    public String createService(HttpServletRequest request, @PathVariable Long scriptId)
+            throws IOException, InterruptedException {
+        Long userId = AuthUtils.getAuthUserId(request);
+        scriptService.existsByUserIdAndScriptId(userId, scriptId);
+        return scriptService.createService(scriptId);
+    }
+
+    /**
+     * 删除服务
+     *
+     * @param request  request
+     * @param scriptId 脚本ID
+     * @return 执行结果
+     * @throws IOException          IOException
+     * @throws InterruptedException InterruptedException
+     */
+    @PutMapping("/{scriptId:[0-9]+}/removeService")
+    public String removeService(HttpServletRequest request, @PathVariable Long scriptId)
+            throws IOException, InterruptedException {
+        Long userId = AuthUtils.getAuthUserId(request);
+        scriptService.existsByUserIdAndScriptId(userId, scriptId);
+        return scriptService.removeService(scriptId);
+    }
+
+    /**
+     * 更新服务
+     *
+     * @param request          request
+     * @param scriptId         脚本ID
+     * @param updateServiceDto 镜像信息
+     * @return 执行结果
+     * @throws IOException          IOException
+     * @throws InterruptedException InterruptedException
+     */
+    @PutMapping("/{scriptId:[0-9]+}/updateService")
+    public Set<String> updateService(HttpServletRequest request, @PathVariable Long scriptId,
+                                     @Validated({UpdateGroup.class}) @RequestBody UpdateServiceDto updateServiceDto)
+            throws IOException, InterruptedException {
+        Long userId = AuthUtils.getAuthUserId(request);
+        scriptService.existsByUserIdAndScriptId(userId, scriptId);
+        return scriptService.updateService(scriptId, updateServiceDto);
     }
 
 }

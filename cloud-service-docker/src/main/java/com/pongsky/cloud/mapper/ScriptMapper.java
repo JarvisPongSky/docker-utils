@@ -26,8 +26,7 @@ public interface ScriptMapper {
      * @param script 脚本信息
      * @return 保存脚本信息
      */
-    @Insert("insert `script`(id,service_name,base_dir,docker_compose_content,base_start_script,start_script, " +
-            "down_script,update_script,data_version,created_at,user_id) " +
+    @Insert("insert `script`(id,service_name,base_dir,docker_compose_content,data_version,created_at,user_id) " +
             "value(#{data.id},#{data.serviceName},#{data.baseDir},#{data.dockerComposeContent}, " +
             "#{data.baseStartScript},#{data.startScript},#{data.downScript},#{data.updateScript}, " +
             "#{data.dataVersion},#{data.createdAt},#{data.userId})")
@@ -49,8 +48,7 @@ public interface ScriptMapper {
      * @param id 脚本ID
      * @return 根据脚本ID查询数据
      */
-    @Select("select s.id,s.service_name,s.base_dir,s.docker_compose_content,s.base_start_script,s.start_script, " +
-            "s.down_script,s.update_script " +
+    @Select("select s.id,s.service_name,s.base_dir,s.docker_compose_content " +
             "from `script` s " +
             "where s.id = #{id} ")
     Optional<ScriptDo> findById(@Param("id") Long id);
@@ -90,8 +88,7 @@ public interface ScriptMapper {
      * @return 根据用户ID查询脚本信息
      */
     @Select("<script>" +
-            "select s.id,s.service_name,s.base_dir,s.docker_compose_content,s.base_start_script,s.start_script, " +
-            "s.down_script,s.update_script " +
+            "select s.id,s.service_name,s.base_dir,s.docker_compose_content  " +
             "from `script` s " +
             "where s.user_id = #{userId} " +
             "<if test = 'search.serviceName != null' >" +

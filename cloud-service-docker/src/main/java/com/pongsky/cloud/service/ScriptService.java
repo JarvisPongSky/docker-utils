@@ -4,6 +4,7 @@ import com.pongsky.cloud.entity.Script;
 import com.pongsky.cloud.entity.script.dos.ScriptDo;
 import com.pongsky.cloud.entity.script.dto.ScriptDto;
 import com.pongsky.cloud.entity.script.dto.SearchScriptDto;
+import com.pongsky.cloud.entity.script.dto.UpdateServiceDto;
 import com.pongsky.cloud.entity.script.vo.ScriptVo;
 import com.pongsky.cloud.exception.DeleteException;
 import com.pongsky.cloud.exception.DoesNotExistException;
@@ -12,14 +13,17 @@ import com.pongsky.cloud.exception.ValidationException;
 import com.pongsky.cloud.mapper.ScriptMapper;
 import com.pongsky.cloud.model.dto.PageQuery;
 import com.pongsky.cloud.model.vo.PageResponse;
+import com.pongsky.cloud.utils.docker.DockerUtils;
 import com.pongsky.cloud.utils.snowflake.SnowFlakeUtils;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author pengsenhao
@@ -57,7 +61,6 @@ public class ScriptService {
     public void save(Long userId, ScriptDto scriptDto) {
         Script script = mapperFacade.map(scriptDto, Script.class)
                 .setId(snowFlakeUtils.getId())
-                .buildScript()
                 .setDataVersion(0L)
                 .setCreatedAt(LocalDateTime.now())
                 .setUserId(userId);
@@ -114,6 +117,54 @@ public class ScriptService {
         ScriptDo scriptDo = scriptMapper.findById(scriptId)
                 .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
         return mapperFacade.map(scriptDo, ScriptVo.class);
+    }
+
+    /**
+     * 创建服务
+     *
+     * @param scriptId 脚本ID
+     * @return 执行结果
+     * @throws IOException          IOException
+     * @throws InterruptedException InterruptedException
+     */
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
+    public String createService(Long scriptId) throws IOException, InterruptedException {
+        ScriptDo scriptDo = scriptMapper.findById(scriptId)
+                .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
+        return DockerUtils.createService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class));
+    }
+
+    /**
+     * 删除服务
+     *
+     * @param scriptId 脚本ID
+     * @return 执行结果
+     * @throws IOException          IOException
+     * @throws InterruptedException InterruptedException
+     */
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
+    public String removeService(Long scriptId) throws IOException, InterruptedException {
+        ScriptDo scriptDo = scriptMapper.findById(scriptId)
+                .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
+        return DockerUtils.removeService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class));
+    }
+
+    /**
+     * 更新服务
+     *
+     * @param scriptId         脚本ID
+     * @param updateServiceDto 镜像信息
+     * @return 执行结果
+     * @throws IOException          IOException
+     * @throws InterruptedException InterruptedException
+     */
+    @Transactional(rollbackFor = Exception.class, readOnly = true)
+    public Set<String> updateService(Long scriptId, UpdateServiceDto updateServiceDto)
+            throws IOException, InterruptedException {
+        ScriptDo scriptDo = scriptMapper.findById(scriptId)
+                .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
+        return DockerUtils.updateService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class),
+                updateServiceDto.getRepository(), updateServiceDto.getTag());
     }
 
 }

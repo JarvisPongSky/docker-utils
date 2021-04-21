@@ -1,6 +1,5 @@
 package com.pongsky.cloud.entity.script.dos;
 
-import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -47,10 +46,16 @@ public class ScriptDo {
      * <p>
      * INFO: 脚本由系统自动生成。
      */
-    private String baseStartScript;
+    private List<String> baseStartScript;
 
     public List<String> getBaseStartScript() {
-        return JSON.parseArray(baseStartScript, String.class);
+        if (baseStartScript == null) {
+            baseStartScript = List.of(
+                    "rm -rf " + baseDir + "docker-compose.yml",
+                    "echo \"" + dockerComposeContent + "\" > " + baseDir + "docker-compose.yml"
+            );
+        }
+        return baseStartScript;
     }
 
     /**
@@ -64,6 +69,13 @@ public class ScriptDo {
      */
     private String startScript;
 
+    public String getStartScript() {
+        if (startScript == null) {
+            startScript = "docker stack deploy -c " + baseDir + "docker-compose.yml" + " " + serviceName;
+        }
+        return startScript;
+    }
+
     /**
      * 关闭脚本
      * <p>
@@ -75,6 +87,13 @@ public class ScriptDo {
      */
     private String downScript;
 
+    public String getDownScript() {
+        if (downScript == null) {
+            downScript = "docker stack down " + serviceName;
+        }
+        return downScript;
+    }
+
     /**
      * 更新脚本
      * <p>
@@ -85,5 +104,12 @@ public class ScriptDo {
      * INFO: 脚本由系统自动生成。
      */
     private String updateScript;
+
+    public String getUpdateScript() {
+        if (updateScript == null) {
+            updateScript = "docker service update --image {0}:{1} " + serviceName + "_" + serviceName;
+        }
+        return updateScript;
+    }
 
 }

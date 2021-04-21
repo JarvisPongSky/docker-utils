@@ -1,12 +1,10 @@
 package com.pongsky.cloud.entity;
 
-import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 脚本信息表
@@ -53,46 +51,6 @@ public class Script {
     private String dockerComposeContent;
 
     /**
-     * base 启动脚本，用于创建 docker-compose 编排文件
-     * <p>
-     * INFO: 脚本由系统自动生成。
-     */
-    private String baseStartScript;
-
-    /**
-     * 启动脚本
-     * <p>
-     * format: docker stack deploy -c {@link Script#getBaseDir()}docker-compose.yml {@link Script#getServiceName()}
-     * <p>
-     * example: docker stack deploy -c ~/Downloads/halo/docker-compose.yml halo
-     * <p>
-     * INFO: 脚本由系统自动生成。
-     */
-    private String startScript;
-
-    /**
-     * 关闭脚本
-     * <p>
-     * format: docker stack down {@link Script#getServiceName()}
-     * <p>
-     * example: docker stack down halo
-     * <p>
-     * INFO: 脚本由系统自动生成。
-     */
-    private String downScript;
-
-    /**
-     * 更新脚本
-     * <p>
-     * format: docker service update --image ${0}:${1} {@link Script#getServiceName()}_{@link Script#getServiceName()}
-     * <p>
-     * example: docker service update --image registry.cn-shanghai.aliyuncs.com/pongsky/halo:prod-1.4.8 halo_halo
-     * <p>
-     * INFO: 脚本由系统自动生成。
-     */
-    private String updateScript;
-
-    /**
      * 数据版本号（乐观锁）
      */
     private Long dataVersion;
@@ -111,21 +69,5 @@ public class Script {
      * 用户ID
      */
     private Long userId;
-
-    /**
-     * 构建脚本信息
-     *
-     * @return this
-     */
-    public Script buildScript() {
-        this.baseStartScript = JSON.toJSONString(List.of(
-                "rm -rf " + baseDir + "docker-compose.yml",
-                "echo \"" + dockerComposeContent + "\" > " + baseDir + "docker-compose.yml"
-        ));
-        this.startScript = "docker stack deploy -c " + baseDir + "docker-compose.yml" + " " + serviceName;
-        this.downScript = "docker stack down " + serviceName;
-        this.updateScript = "docker service update --image {0}:{1} " + serviceName + "_" + serviceName;
-        return this;
-    }
 
 }

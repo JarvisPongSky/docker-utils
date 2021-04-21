@@ -34,15 +34,6 @@ public class Script {
     private String baseDir;
 
     /**
-     * docker-compose 编排文件名称
-     * <p>
-     * example & default: docker-compose.yml
-     * <p>
-     * WARN: 保存后会自动创建文件。如存在同名文，则会进行删除处理。
-     */
-    private String dockerComposeFileName;
-
-    /**
      * docker-compose 编排文件内容
      */
     private String dockerComposeContent;
@@ -57,7 +48,7 @@ public class Script {
     /**
      * 启动脚本
      * <p>
-     * format: docker stack deploy -c {@link Script#getBaseDir()}{@link Script#getDockerComposeFileName()} {@link Script#getServiceName()}
+     * format: docker stack deploy -c {@link Script#getBaseDir()}docker-compose.yml {@link Script#getServiceName()}
      * <p>
      * example: docker stack deploy -c ~/Downloads/halo/docker-compose.yml halo
      * <p>

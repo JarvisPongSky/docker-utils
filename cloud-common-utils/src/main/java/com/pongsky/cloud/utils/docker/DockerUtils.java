@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.SequenceInputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * docker 工具类
@@ -26,18 +28,18 @@ public class DockerUtils {
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
      */
-    public static String runScript(String cmd) throws IOException, InterruptedException {
+    public static Set<String> runScript(String cmd) throws IOException, InterruptedException {
         Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});
         process.waitFor();
         SequenceInputStream sis = new SequenceInputStream(process.getInputStream(), process.getErrorStream());
-        StringBuilder result = new StringBuilder();
+        Set<String> result = new LinkedHashSet<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(sis, StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
-                result.append(line).append("\n");
+                result.add(line);
             }
         }
-        return result.length() > 0 ? result.substring(0, result.lastIndexOf("\n")) : result.toString();
+        return result;
     }
 
     /**
@@ -52,7 +54,7 @@ public class DockerUtils {
         for (String baseStartScript : script.getBaseStartScript()) {
             runScript(baseStartScript);
         }
-        String cmdResult = runScript(script.getStartScript());
+        String cmdResult = String.join("\n", runScript(script.getStartScript()));
         DockerExecutionResult.validationCreateService(cmdResult, script);
         return cmdResult;
     }
@@ -66,7 +68,7 @@ public class DockerUtils {
      * @throws InterruptedException InterruptedException
      */
     public static String removeService(Script script) throws IOException, InterruptedException {
-        String cmdResult = runScript(script.getDownScript());
+        String cmdResult = String.join("\n", runScript(script.getStartScript()));
         DockerExecutionResult.validationRemoveService(cmdResult, script);
         return cmdResult;
     }
@@ -74,18 +76,19 @@ public class DockerUtils {
     /**
      * 更新服务
      *
-     * @param script 脚本信息
+     * @param script     脚本信息
      * @param repository 镜像
      * @param tag        标签
      * @return 执行结果
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
      */
-    public static String updateService(Script script, String repository, String tag)
+    public static Set<String> updateService(Script script, String repository, String tag)
             throws IOException, InterruptedException {
-        String cmdResult = runScript(MessageFormat.format(script.getUpdateScript(), repository, tag));
+        Set<String> cmdResults = runScript(MessageFormat.format(script.getUpdateScript(), repository, tag));
+        String cmdResult = String.join("\n", cmdResults);
         DockerExecutionResult.validationUpdateService(cmdResult, script);
-        return cmdResult;
+        return cmdResults;
     }
 
 }
