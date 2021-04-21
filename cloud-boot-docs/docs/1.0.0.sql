@@ -41,7 +41,6 @@ insert `docker`.`user`(id, role, username, password, name, phone, is_disable, da
 CREATE TABLE `docker`.`script`
 (
     `id`                     bigint unsigned                                               NOT NULL COMMENT '脚本 ID',
-    `active`                 varchar(5) COLLATE utf8mb4_unicode_ci                         NOT NULL COMMENT '环境',
     `service_name`           varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '服务名称',
     `base_dir`               varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'base 文件目录，以 / 结尾',
     `docker_compose_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci     NOT NULL COMMENT 'docker-compose 编排文件内容',

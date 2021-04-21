@@ -22,11 +22,6 @@ public class ScriptDo {
     private Long id;
 
     /**
-     * 环境
-     */
-    private Active active;
-
-    /**
      * 服务名称
      * <p>
      * example: halo

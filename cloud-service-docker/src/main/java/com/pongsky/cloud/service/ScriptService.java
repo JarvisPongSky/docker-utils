@@ -13,7 +13,6 @@ import com.pongsky.cloud.exception.UpdateException;
 import com.pongsky.cloud.exception.ValidationException;
 import com.pongsky.cloud.mapper.ScriptMapper;
 import com.pongsky.cloud.model.dto.PageQuery;
-import com.pongsky.cloud.model.emums.Active;
 import com.pongsky.cloud.model.vo.PageResponse;
 import com.pongsky.cloud.utils.docker.DockerUtils;
 import com.pongsky.cloud.utils.snowflake.SnowFlakeUtils;
@@ -44,14 +43,13 @@ public class ScriptService {
      *
      * @param id          脚本ID
      * @param userId      用户ID
-     * @param active      环境
      * @param serviceName 服务名称
      */
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public void existsByUserIdAndServiceName(Long id, Long userId, Active active, String serviceName) {
-        Integer count = scriptMapper.countByNotIdAndUserIdAndActiveAndServiceName(id, userId, active, serviceName);
+    public void existsByUserIdAndServiceName(Long id, Long userId, String serviceName) {
+        Integer count = scriptMapper.countByNotIdAndUserIdAndServiceName(id, userId, serviceName);
         if (count > 0) {
-            throw new ValidationException("环境 " + active + " 和 服务名称 " + serviceName + " 已存在，请更换其他名称重试");
+            throw new ValidationException("服务名称 " + serviceName + " 已存在，请更换其他名称重试");
         }
     }
 
@@ -82,13 +80,10 @@ public class ScriptService {
     public void modify(Long userId, Long scriptId, ScriptDto scriptDto) {
         ScriptDo scriptDo = scriptMapper.findById(scriptId)
                 .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
-        if (scriptDto.getActive() != null) {
-            scriptDo.setActive(scriptDto.getActive());
-        }
         if (scriptDto.getServiceName() != null) {
             scriptDo.setServiceName(scriptDto.getServiceName());
         }
-        existsByUserIdAndServiceName(scriptId, userId, scriptDo.getActive(), scriptDo.getServiceName());
+        existsByUserIdAndServiceName(scriptId, userId, scriptDo.getServiceName());
         Integer count = scriptMapper.modify(scriptId, scriptDo.getDataVersion(), scriptDto);
         UpdateException.validation("脚本信息修改失败", count);
     }

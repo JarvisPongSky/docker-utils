@@ -1,6 +1,5 @@
 package com.pongsky.cloud.entity.script.dto;
 
-import com.pongsky.cloud.model.emums.Active;
 import com.pongsky.cloud.validator.CreateGroup;
 import com.pongsky.cloud.validator.UpdateGroup;
 import lombok.Data;
@@ -22,12 +21,6 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class ScriptDto {
-
-    /**
-     * 环境
-     */
-    @NotNull(groups = {CreateGroup.class})
-    private Active active;
 
     /**
      * 服务名称

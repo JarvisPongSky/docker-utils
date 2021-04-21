@@ -1,6 +1,5 @@
 package com.pongsky.cloud.entity;
 
-import com.pongsky.cloud.model.emums.Active;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -24,11 +23,6 @@ public class Script {
      * 脚本 ID
      */
     private Long id;
-
-    /**
-     * 环境
-     */
-    private Active active;
 
     /**
      * 服务名称

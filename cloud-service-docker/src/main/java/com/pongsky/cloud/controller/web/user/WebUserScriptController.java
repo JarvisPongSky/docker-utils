@@ -60,7 +60,7 @@ public class WebUserScriptController {
             throw new ValidationException("base 文件目录，以 " + Script.BASE_DIR_SUFFIX + " 结尾");
         }
         Long userId = AuthUtils.getAuthUserId(request);
-        scriptService.existsByUserIdAndServiceName(null, userId, scriptDto.getActive(), scriptDto.getServiceName());
+        scriptService.existsByUserIdAndServiceName(null, userId,  scriptDto.getServiceName());
         scriptService.save(userId, scriptDto);
     }
 
