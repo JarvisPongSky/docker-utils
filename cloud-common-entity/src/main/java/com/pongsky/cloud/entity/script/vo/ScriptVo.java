@@ -1,6 +1,7 @@
 package com.pongsky.cloud.entity.script.vo;
 
 import com.pongsky.cloud.entity.script.dos.ScriptDo;
+import com.pongsky.cloud.model.emums.Active;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -22,6 +23,11 @@ public class ScriptVo {
     private Long id;
 
     /**
+     * 环境
+     */
+    private Active active;
+
+    /**
      * 服务名称
      * <p>
      * example: halo
@@ -41,6 +47,11 @@ public class ScriptVo {
      * docker-compose 编排文件内容
      */
     private String dockerComposeContent;
+
+    /**
+     * 是否自动更新
+     */
+    private Integer isAutoUpdate;
 
     /**
      * base 启动脚本，用于创建 docker-compose 编排文件

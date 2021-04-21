@@ -60,8 +60,27 @@ public class WebUserScriptController {
             throw new ValidationException("base 文件目录，以 " + Script.BASE_DIR_SUFFIX + " 结尾");
         }
         Long userId = AuthUtils.getAuthUserId(request);
-        scriptService.existsByUserIdAndServiceName(userId, scriptDto.getServiceName());
+        scriptService.existsByUserIdAndServiceName(null, userId, scriptDto.getActive(), scriptDto.getServiceName());
         scriptService.save(userId, scriptDto);
+    }
+
+    /**
+     * 修改脚本信息
+     *
+     * @param request   request
+     * @param scriptId  脚本ID
+     * @param scriptDto 脚本信息
+     */
+    @PutMapping("/{scriptId:[0-9]+}")
+    public void modify(HttpServletRequest request,
+                       @PathVariable Long scriptId,
+                       @Validated({UpdateGroup.class}) @RequestBody ScriptDto scriptDto) {
+        if (scriptDto.getBaseDir() != null && !scriptDto.getBaseDir().endsWith(Script.BASE_DIR_SUFFIX)) {
+            throw new ValidationException("base 文件目录，以 " + Script.BASE_DIR_SUFFIX + " 结尾");
+        }
+        Long userId = AuthUtils.getAuthUserId(request);
+        scriptService.existsByUserIdAndScriptId(userId, scriptId);
+        scriptService.modify(userId, scriptId, scriptDto);
     }
 
     /**
