@@ -1,0 +1,20 @@
+plugins {
+
+}
+
+apply plugin: "java"
+
+jar {
+    enabled = true
+}
+
+dependencies {
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    implementation "com.auth0:java-jwt:${jwtVersion}"
+    implementation "com.alibaba:fastjson:${fastjsonVersion}"
+    implementation "javax.servlet:javax.servlet-api:${servletVersion}"
+    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+}

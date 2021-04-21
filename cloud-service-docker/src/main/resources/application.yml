@@ -1,0 +1,6 @@
+application:
+  module: docker # 模块名称
+  formatted-version: PONGSKY ${application.name}-${application.module} ${application.version} # 格式化版本
+spring:
+  application:
+    name: ${application.name}-${application.module} # 应用名称

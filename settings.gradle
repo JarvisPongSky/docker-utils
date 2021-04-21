@@ -1,1 +1,8 @@
 rootProject.name = "docker-utils"
+include 'cloud-common-utils'
+include 'cloud-common-entity'
+include 'cloud-config-boot'
+include 'cloud-config-web'
+include 'cloud-service-docker'
+include 'cloud-boot-docs'
+
