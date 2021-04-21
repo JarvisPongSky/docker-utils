@@ -29,10 +29,10 @@ public interface ScriptMapper {
      * @param script 脚本信息
      * @return 保存脚本信息
      */
-    @Insert("insert `script`(id,service_name,base_dir,docker_compose_content,data_version,created_at,user_id) " +
-            "value(#{data.id},#{data.serviceName},#{data.baseDir},#{data.dockerComposeContent}, " +
-            "#{data.baseStartScript},#{data.startScript},#{data.downScript},#{data.updateScript}, " +
-            "#{data.dataVersion},#{data.createdAt},#{data.userId})")
+    @Insert("insert `script`(id,active,service_name,base_dir,docker_compose_content,is_auto_update,data_version, " +
+            "created_at,user_id) " +
+            "value(#{data.id},#{data.active},#{data.serviceName},#{data.baseDir},#{data.dockerComposeContent}, " +
+            "#{data.isAutoUpdate},#{data.dataVersion},#{data.createdAt},#{data.userId})")
     Integer save(@Param("data") Script script);
 
     /**
@@ -84,7 +84,7 @@ public interface ScriptMapper {
      * @param id 脚本ID
      * @return 根据脚本ID查询数据
      */
-    @Select("select s.id,s.active,s.service_name,s.base_dir,s.docker_compose_content,s.is_auth_update,s.data_version " +
+    @Select("select s.id,s.active,s.service_name,s.base_dir,s.docker_compose_content,s.is_auto_update,s.data_version " +
             "from `script` s " +
             "where s.id = #{id} ")
     Optional<ScriptDo> findById(@Param("id") Long id);
@@ -111,14 +111,16 @@ public interface ScriptMapper {
      * @param serviceName 服务名称
      * @return 根据用户ID和环境和服务名称查询总数
      */
-    @Select("select count(s.id) " +
+    @Select("<script>" +
+            "select count(s.id) " +
             "from `script` s " +
             "where s.user_id = #{userId} " +
             "<if test = 'id != null' >" +
             "and s.id != #{id} " +
             "</if>" +
             "and s.active = #{active,jdbcType=VARCHAR} " +
-            "and s.service_name = #{serviceName} ")
+            "and s.service_name = #{serviceName} " +
+            "</script>")
     Integer countByNotIdAndUserIdAndActiveAndServiceName(@Param("id") Long id,
                                                          @Param("userId") Long userId,
                                                          @Param("active") Active active,
@@ -133,7 +135,7 @@ public interface ScriptMapper {
      * @return 根据用户ID查询脚本信息
      */
     @Select("<script>" +
-            "select s.id,s.active,s.service_name,s.base_dir,s.docker_compose_content,s.is_auth_update,s.data_version " +
+            "select s.id,s.active,s.service_name,s.base_dir,s.docker_compose_content,s.is_auto_update,s.data_version " +
             "from `script` s " +
             "where s.user_id = #{userId} " +
             "<if test = 'search.serviceName != null' >" +
