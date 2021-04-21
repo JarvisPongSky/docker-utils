@@ -23,7 +23,8 @@ public interface UserMapper {
      * @return 保存用户信息
      */
     @Insert("insert `user`(id,role,username,password,name,phone,is_disable,data_version,created_at) " +
-            "value(#{data.id},#{data.role},#{data.username},#{data.password},#{data.name},#{data.phone},#{data.isDisable},#{data.dataVersion},#{data.createdAt})")
+            "value(#{data.id},#{data.role},#{data.username},#{data.password},#{data.name},#{data.phone}, " +
+            "#{data.isDisable},#{data.dataVersion},#{data.createdAt})")
     Integer save(@Param("data") User user);
 
     /**

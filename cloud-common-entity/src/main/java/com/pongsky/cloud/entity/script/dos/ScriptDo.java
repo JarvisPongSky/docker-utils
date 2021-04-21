@@ -1,25 +1,20 @@
-package com.pongsky.cloud.entity;
+package com.pongsky.cloud.entity.script.dos;
 
 import com.alibaba.fastjson.JSON;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 脚本信息表
- * <p>
- * unique - userId + serviceName
- *
  * @author pengsenhao
  * @create 2021-04-21
  */
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-public class Script {
+public class ScriptDo {
 
     /**
      * 脚本 ID
@@ -32,11 +27,6 @@ public class Script {
      * example: halo
      */
     private String serviceName;
-
-    /**
-     * base 文件目录，以 / 结尾
-     */
-    public static final String BASE_DIR_SUFFIX = "/";
 
     /**
      * base 文件目录，以 / 结尾
@@ -59,10 +49,14 @@ public class Script {
      */
     private String baseStartScript;
 
+    public List<String> getBaseStartScript() {
+        return JSON.parseArray(baseStartScript, String.class);
+    }
+
     /**
      * 启动脚本
      * <p>
-     * format: docker stack deploy -c {@link Script#getBaseDir()}docker-compose.yml {@link Script#getServiceName()}
+     * format: docker stack deploy -c {@link ScriptDo#getBaseDir()}docker-compose.yml {@link ScriptDo#getServiceName()}
      * <p>
      * example: docker stack deploy -c ~/Downloads/halo/docker-compose.yml halo
      * <p>
@@ -73,7 +67,7 @@ public class Script {
     /**
      * 关闭脚本
      * <p>
-     * format: docker stack down {@link Script#getServiceName()}
+     * format: docker stack down {@link ScriptDo#getServiceName()}
      * <p>
      * example: docker stack down halo
      * <p>
@@ -84,48 +78,12 @@ public class Script {
     /**
      * 更新脚本
      * <p>
-     * format: docker service update --image ${0}:${1} {@link Script#getServiceName()}_{@link Script#getServiceName()}
+     * format: docker service update --image ${0}:${1} {@link ScriptDo#getServiceName()}_{@link ScriptDo#getServiceName()}
      * <p>
      * example: docker service update --image registry.cn-shanghai.aliyuncs.com/pongsky/halo:prod-1.4.8 halo_halo
      * <p>
      * INFO: 脚本由系统自动生成。
      */
     private String updateScript;
-
-    /**
-     * 数据版本号（乐观锁）
-     */
-    private Long dataVersion;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createdAt;
-
-    /**
-     * 修改时间
-     */
-    private LocalDateTime updatedAt;
-
-    /**
-     * 用户ID
-     */
-    private Long userId;
-
-    /**
-     * 构建脚本信息
-     *
-     * @return this
-     */
-    public Script buildScript() {
-        this.baseStartScript = JSON.toJSONString(List.of(
-                "rm -rf " + baseDir + "docker-compose.yml",
-                "echo \"" + dockerComposeContent + "\" > " + baseDir + "docker-compose.yml"
-        ));
-        this.startScript = "docker stack deploy -c " + baseDir + "docker-compose.yml" + " " + serviceName;
-        this.downScript = "docker stack down " + serviceName;
-        this.updateScript = "docker service update --image {0}:{1} " + serviceName + "_" + serviceName;
-        return this;
-    }
 
 }

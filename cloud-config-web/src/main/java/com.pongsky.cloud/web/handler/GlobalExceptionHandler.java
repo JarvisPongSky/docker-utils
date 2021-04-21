@@ -2,6 +2,7 @@ package com.pongsky.cloud.web.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pongsky.cloud.exception.DeleteException;
 import com.pongsky.cloud.exception.DoesNotExistException;
 import com.pongsky.cloud.exception.ExistException;
 import com.pongsky.cloud.exception.FrequencyException;
@@ -377,6 +378,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = UpdateException.class)
     public Object updateException(UpdateException exception, HttpServletRequest request) {
         return getResult(ResultCode.UpdateException, null, exception, request);
+    }
+
+    /**
+     * 删除异常
+     *
+     * @param exception exception
+     * @param request   request
+     * @return 删除异常
+     */
+    @ExceptionHandler(value = DeleteException.class)
+    public Object deleteException(DeleteException exception, HttpServletRequest request) {
+        return getResult(ResultCode.DeleteException, null, exception, request);
     }
 
     /**

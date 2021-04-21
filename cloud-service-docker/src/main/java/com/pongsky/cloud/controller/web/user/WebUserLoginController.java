@@ -1,4 +1,4 @@
-package com.pongsky.cloud.controller.user;
+package com.pongsky.cloud.controller.web.user;
 
 import com.pongsky.cloud.entity.user.dto.RefreshTokenLoginDto;
 import com.pongsky.cloud.entity.user.dto.UserDto;

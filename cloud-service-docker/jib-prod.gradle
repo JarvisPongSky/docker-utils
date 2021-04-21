@@ -4,6 +4,10 @@ jib {
     }
     to {
         image = "registry.cn-shanghai.aliyuncs.com/pongsky/docker"
+        auth {
+            username = 'xxx'
+            password = 'xxx'
+        }
         tags = ["prod-" + version.toString()]
     }
     container {
