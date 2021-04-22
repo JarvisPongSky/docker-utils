@@ -1,6 +1,5 @@
 package com.pongsky.cloud.entity.script;
 
-import com.pongsky.cloud.entity.script.dos.ScriptDo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -24,15 +23,6 @@ public class BaseScript {
     private String serviceName;
 
     /**
-     * base 文件目录，以 / 结尾
-     * <p>
-     * example: ~/Downloads/halo/
-     * <p>
-     * TIPS: 建议每个服务都有单独文件夹，防止窜在一起不好识别
-     */
-    private String baseDir;
-
-    /**
      * docker-compose 编排文件内容
      */
     private String dockerComposeContent;
@@ -47,9 +37,9 @@ public class BaseScript {
     public List<String> getBaseStartScript() {
         if (baseStartScript == null) {
             baseStartScript = List.of(
-                    "rm -rf " + baseDir + "docker-compose.yml",
-                    "mkdir -p " + baseDir,
-                    "echo \"" + dockerComposeContent + "\" > " + baseDir + "docker-compose.yml"
+                    "rm -rf ~/docker-deploy-script/" + serviceName + "/docker-compose.yml",
+                    "mkdir -p ~/docker-deploy-script/" + serviceName,
+                    "echo \"" + dockerComposeContent + "\" > ~/docker-deploy-script/" + serviceName + "/docker-compose.yml"
             );
         }
         return baseStartScript;
@@ -57,8 +47,6 @@ public class BaseScript {
 
     /**
      * 启动脚本
-     * <p>
-     * format: docker stack deploy -c {@link ScriptDo#getBaseDir()}docker-compose.yml {@link ScriptDo#getServiceName()}
      * <p>
      * example: docker stack deploy -c ~/Downloads/halo/docker-compose.yml halo
      * <p>
@@ -68,15 +56,13 @@ public class BaseScript {
 
     public String getStartScript() {
         if (startScript == null) {
-            startScript = "docker stack deploy -c " + baseDir + "docker-compose.yml" + " " + serviceName;
+            startScript = "docker stack deploy -c ~/docker-deploy-script/" + serviceName + "/docker-compose.yml" + " " + serviceName;
         }
         return startScript;
     }
 
     /**
      * 关闭脚本
-     * <p>
-     * format: docker stack down {@link ScriptDo#getServiceName()}
      * <p>
      * example: docker stack down halo
      * <p>
@@ -93,8 +79,6 @@ public class BaseScript {
 
     /**
      * 更新脚本
-     * <p>
-     * format: docker service update --image ${0}:${1} {@link ScriptDo#getServiceName()}_{@link ScriptDo#getServiceName()}
      * <p>
      * example: docker service update --image registry.cn-shanghai.aliyuncs.com/pongsky/halo:prod-1.4.8 halo_halo
      * <p>

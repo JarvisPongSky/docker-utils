@@ -25,15 +25,6 @@ public class Script {
     private String serviceName;
 
     /**
-     * base 文件目录，以 / 结尾
-     * <p>
-     * example: ~/Downloads/halo/
-     * <p>
-     * TIPS: 建议每个服务都有单独文件夹，防止窜在一起不好识别
-     */
-    private String baseDir;
-
-    /**
      * docker-compose 编排文件内容
      */
     private String dockerComposeContent;
@@ -48,8 +39,6 @@ public class Script {
     /**
      * 启动脚本
      * <p>
-     * format: docker stack deploy -c {@link Script#getBaseDir()}docker-compose.yml {@link Script#getServiceName()}
-     * <p>
      * example: docker stack deploy -c ~/Downloads/halo/docker-compose.yml halo
      * <p>
      * INFO: 脚本由系统自动生成。
@@ -59,8 +48,6 @@ public class Script {
     /**
      * 关闭脚本
      * <p>
-     * format: docker stack down {@link Script#getServiceName()}
-     * <p>
      * example: docker stack down halo
      * <p>
      * INFO: 脚本由系统自动生成。
@@ -69,8 +56,6 @@ public class Script {
 
     /**
      * 更新脚本
-     * <p>
-     * format: docker service update --image ${0}:${1} {@link Script#getServiceName()}_{@link Script#getServiceName()}
      * <p>
      * example: docker service update --image registry.cn-shanghai.aliyuncs.com/pongsky/halo:prod-1.4.8 halo_halo
      * <p>

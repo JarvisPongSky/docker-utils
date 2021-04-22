@@ -1,6 +1,5 @@
 package com.pongsky.cloud.controller.web.user;
 
-import com.pongsky.cloud.entity.Script;
 import com.pongsky.cloud.entity.script.dto.ScriptDto;
 import com.pongsky.cloud.entity.script.dto.SearchScriptDto;
 import com.pongsky.cloud.entity.script.dto.UpdateServiceDto;
@@ -48,6 +47,11 @@ public class WebUserScriptController {
     private final ScriptService scriptService;
 
     /**
+     * 目录间隔
+     */
+    private static final String DIR_INTERVAL = "/";
+
+    /**
      * 保存脚本信息
      *
      * @param request   request
@@ -56,11 +60,11 @@ public class WebUserScriptController {
     @PostMapping
     public void save(HttpServletRequest request,
                      @Validated({CreateGroup.class}) @RequestBody ScriptDto scriptDto) {
-        if (!scriptDto.getBaseDir().endsWith(Script.BASE_DIR_SUFFIX)) {
-            throw new ValidationException("base 文件目录，以 " + Script.BASE_DIR_SUFFIX + " 结尾");
+        if (scriptDto.getServiceName().contains(DIR_INTERVAL)) {
+            throw new ValidationException("服务名不允许出现 " + DIR_INTERVAL);
         }
         Long userId = AuthUtils.getAuthUserId(request);
-        scriptService.existsByUserIdAndServiceName(null, userId, scriptDto.getServiceName());
+        scriptService.existsByIdAndServiceName(null, scriptDto.getServiceName());
         scriptService.save(userId, scriptDto);
     }
 
@@ -75,12 +79,9 @@ public class WebUserScriptController {
     public void modify(HttpServletRequest request,
                        @PathVariable Long scriptId,
                        @Validated({UpdateGroup.class}) @RequestBody ScriptDto scriptDto) {
-        if (scriptDto.getBaseDir() != null && !scriptDto.getBaseDir().endsWith(Script.BASE_DIR_SUFFIX)) {
-            throw new ValidationException("base 文件目录，以 " + Script.BASE_DIR_SUFFIX + " 结尾");
-        }
         Long userId = AuthUtils.getAuthUserId(request);
         scriptService.existsByUserIdAndScriptId(userId, scriptId);
-        scriptService.modify(userId, scriptId, scriptDto);
+        scriptService.modify(scriptId, scriptDto);
     }
 
     /**

@@ -28,19 +28,8 @@ public class ScriptDto {
      * example: halo
      */
     @NotBlank(groups = {CreateGroup.class})
-    @Length(max = 30, groups = {CreateGroup.class, UpdateGroup.class})
+    @Length(max = 30, groups = {CreateGroup.class})
     private String serviceName;
-
-    /**
-     * base 文件目录，以 / 结尾
-     * <p>
-     * example: ~/Downloads/halo/
-     * <p>
-     * TIPS: 建议每个服务都有单独文件夹，防止窜在一起不好识别
-     */
-    @NotBlank(groups = {CreateGroup.class})
-    @Length(max = 100, groups = {CreateGroup.class, UpdateGroup.class})
-    private String baseDir;
 
     /**
      * docker-compose 编排文件内容

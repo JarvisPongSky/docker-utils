@@ -32,20 +32,6 @@ public class Script {
     private String serviceName;
 
     /**
-     * base 文件目录，以 / 结尾
-     */
-    public static final String BASE_DIR_SUFFIX = "/";
-
-    /**
-     * base 文件目录，以 / 结尾
-     * <p>
-     * example: ~/Downloads/halo/
-     * <p>
-     * TIPS: 建议每个服务都有单独文件夹，防止窜在一起不好识别
-     */
-    private String baseDir;
-
-    /**
      * docker-compose 编排文件内容
      */
     private String dockerComposeContent;

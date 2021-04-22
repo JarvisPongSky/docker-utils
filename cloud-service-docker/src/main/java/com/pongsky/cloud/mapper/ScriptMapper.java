@@ -28,9 +28,9 @@ public interface ScriptMapper {
      * @param script 脚本信息
      * @return 保存脚本信息
      */
-    @Insert("insert `script`(id,service_name,base_dir,docker_compose_content,is_auto_update,data_version, " +
+    @Insert("insert `script`(id,service_name,docker_compose_content,is_auto_update,data_version, " +
             "created_at,user_id) " +
-            "value(#{data.id},#{data.serviceName},#{data.baseDir},#{data.dockerComposeContent}, " +
+            "value(#{data.id},#{data.serviceName},#{data.dockerComposeContent}, " +
             "#{data.isAutoUpdate},#{data.dataVersion},#{data.createdAt},#{data.userId})")
     Integer save(@Param("data") Script script);
 
@@ -45,12 +45,6 @@ public interface ScriptMapper {
     @Update("<script>" +
             "update `script` " +
             "set updated_at = now() " +
-            "<if test = 'data.serviceName != null' >" +
-            ",service_name = #{data.serviceName} " +
-            "</if>" +
-            "<if test = 'data.baseDir != null' >" +
-            ",base_dir = #{data.baseDir} " +
-            "</if>" +
             "<if test = 'data.dockerComposeContent != null' >" +
             ",docker_compose_content = #{data.dockerComposeContent} " +
             "</if>" +
@@ -80,7 +74,7 @@ public interface ScriptMapper {
      * @param id 脚本ID
      * @return 根据脚本ID查询数据
      */
-    @Select("select s.id,s.service_name,s.base_dir,s.docker_compose_content,s.is_auto_update,s.data_version " +
+    @Select("select s.id,s.service_name,s.docker_compose_content,s.is_auto_update,s.data_version " +
             "from `script` s " +
             "where s.id = #{id} ")
     Optional<ScriptDo> findById(@Param("id") Long id);
@@ -101,7 +95,6 @@ public interface ScriptMapper {
     /**
      * 根据用户ID和环境和服务名称查询总数
      *
-     * @param userId      用户ID
      * @param id          脚本ID
      * @param serviceName 服务名称
      * @return 根据用户ID和环境和服务名称查询总数
@@ -109,15 +102,13 @@ public interface ScriptMapper {
     @Select("<script>" +
             "select count(s.id) " +
             "from `script` s " +
-            "where s.user_id = #{userId} " +
+            "where s.service_name = #{serviceName} " +
             "<if test = 'id != null' >" +
             "and s.id != #{id} " +
             "</if>" +
-            "and s.service_name = #{serviceName} " +
             "</script>")
-    Integer countByNotIdAndUserIdAndServiceName(@Param("id") Long id,
-                                                @Param("userId") Long userId,
-                                                @Param("serviceName") String serviceName);
+    Integer countByNotIdAndServiceName(@Param("id") Long id,
+                                       @Param("serviceName") String serviceName);
 
     /**
      * 根据用户ID查询脚本信息
@@ -128,7 +119,7 @@ public interface ScriptMapper {
      * @return 根据用户ID查询脚本信息
      */
     @Select("<script>" +
-            "select s.id,s.service_name,s.base_dir,s.docker_compose_content,s.is_auto_update,s.data_version " +
+            "select s.id,s.service_name,s.docker_compose_content,s.is_auto_update,s.data_version " +
             "from `script` s " +
             "where s.user_id = #{userId} " +
             "<if test = 'search.serviceName != null' >" +

@@ -40,17 +40,16 @@ insert `docker`.`user`(id, role, username, password, name, phone, is_disable, da
 -- ----------------------------
 CREATE TABLE `docker`.`script`
 (
-    `id`                     bigint unsigned                                               NOT NULL COMMENT '脚本 ID',
-    `service_name`           varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci  NOT NULL COMMENT '服务名称',
-    `base_dir`               varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'base 文件目录，以 / 结尾',
-    `docker_compose_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci     NOT NULL COMMENT 'docker-compose 编排文件内容',
-    `is_auto_update`         tinyint unsigned                                              NOT NULL COMMENT '是否自动更新',
-    `data_version`           bigint unsigned                                               NOT NULL COMMENT '数据版本号（乐观锁）',
-    `created_at`             datetime(6)                                                   NOT NULL COMMENT '创建时间',
+    `id`                     bigint unsigned                                              NOT NULL COMMENT '脚本 ID',
+    `service_name`           varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '服务名称',
+    `docker_compose_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci    NOT NULL COMMENT 'docker-compose 编排文件内容',
+    `is_auto_update`         tinyint unsigned                                             NOT NULL COMMENT '是否自动更新',
+    `data_version`           bigint unsigned                                              NOT NULL COMMENT '数据版本号（乐观锁）',
+    `created_at`             datetime(6)                                                  NOT NULL COMMENT '创建时间',
     `updated_at`             datetime(6) DEFAULT NULL COMMENT '修改时间',
-    `user_id`                bigint unsigned                                               NOT NULL COMMENT '用户 ID',
+    `user_id`                bigint unsigned                                              NOT NULL COMMENT '用户 ID',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_userId_serviceName` (`user_id`, `service_name`) USING BTREE
+    UNIQUE KEY `uk_serviceName` (`service_name`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci COMMENT ='脚本信息表';
