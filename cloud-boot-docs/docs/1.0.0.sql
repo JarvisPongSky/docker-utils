@@ -40,14 +40,14 @@ insert `docker`.`user`(id, role, username, password, name, phone, is_disable, da
 -- ----------------------------
 CREATE TABLE `docker`.`script`
 (
-    `id`                     bigint unsigned                                              NOT NULL COMMENT '脚本 ID',
+    `id`                     bigint(20) unsigned                                          NOT NULL COMMENT '脚本 ID',
     `service_name`           varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '服务名称',
     `docker_compose_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci    NOT NULL COMMENT 'docker-compose 编排文件内容',
-    `is_auto_update`         tinyint unsigned                                             NOT NULL COMMENT '是否自动更新',
-    `data_version`           bigint unsigned                                              NOT NULL COMMENT '数据版本号（乐观锁）',
+    `is_auto_update`         tinyint(2) unsigned                                          NOT NULL COMMENT '是否自动更新',
+    `data_version`           bigint(20) unsigned                                          NOT NULL COMMENT '数据版本号（乐观锁）',
     `created_at`             datetime(6)                                                  NOT NULL COMMENT '创建时间',
     `updated_at`             datetime(6) DEFAULT NULL COMMENT '修改时间',
-    `user_id`                bigint unsigned                                              NOT NULL COMMENT '用户 ID',
+    `user_id`                bigint(20) unsigned                                          NOT NULL COMMENT '用户 ID',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_serviceName` (`service_name`) USING BTREE
 ) ENGINE = InnoDB
