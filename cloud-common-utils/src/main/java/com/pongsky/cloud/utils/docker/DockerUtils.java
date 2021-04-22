@@ -69,7 +69,7 @@ public class DockerUtils {
      * @throws InterruptedException InterruptedException
      */
     public static String removeService(Script script) throws IOException, InterruptedException {
-        String cmdResult = String.join("\n", runScript(script.getStartScript()));
+        String cmdResult = String.join("\n", runScript(script.getDownScript()));
         DockerExecutionResult.validationRemoveService(cmdResult, script);
         return cmdResult;
     }

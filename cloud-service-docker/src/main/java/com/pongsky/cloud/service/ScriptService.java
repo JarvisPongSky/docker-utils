@@ -19,6 +19,7 @@ import com.pongsky.cloud.utils.snowflake.SnowFlakeUtils;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 /**
  * @author pengsenhao
@@ -149,11 +151,14 @@ public class ScriptService {
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
      */
+    @Async
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public String createService(Long scriptId) throws IOException, InterruptedException {
+    public Future<String> createService(Long scriptId) throws IOException, InterruptedException {
         ScriptDo scriptDo = scriptMapper.findById(scriptId)
                 .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
-        return DockerUtils.createService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class));
+        return new AsyncResult<>(
+                DockerUtils.createService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class))
+        );
     }
 
     /**
@@ -164,11 +169,14 @@ public class ScriptService {
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
      */
+    @Async
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public String removeService(Long scriptId) throws IOException, InterruptedException {
+    public Future<String> removeService(Long scriptId) throws IOException, InterruptedException {
         ScriptDo scriptDo = scriptMapper.findById(scriptId)
                 .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
-        return DockerUtils.removeService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class));
+        return new AsyncResult<>(
+                DockerUtils.removeService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class))
+        );
     }
 
     /**
@@ -180,13 +188,16 @@ public class ScriptService {
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
      */
+    @Async
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public Set<String> updateService(Long scriptId, UpdateServiceDto updateServiceDto)
+    public Future<Set<String>> updateService(Long scriptId, UpdateServiceDto updateServiceDto)
             throws IOException, InterruptedException {
         ScriptDo scriptDo = scriptMapper.findById(scriptId)
                 .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
-        return DockerUtils.updateService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class),
-                updateServiceDto.getRepository(), updateServiceDto.getTag());
+        return new AsyncResult<>(
+                DockerUtils.updateService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class),
+                        updateServiceDto.getRepository(), updateServiceDto.getTag())
+        );
     }
 
     /**
