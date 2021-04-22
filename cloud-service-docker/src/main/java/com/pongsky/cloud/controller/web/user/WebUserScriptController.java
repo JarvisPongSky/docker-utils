@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 /**
  * 脚本模块
@@ -139,14 +138,13 @@ public class WebUserScriptController {
      * @return 执行结果
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
-     * @throws ExecutionException   ExecutionException
      */
     @PutMapping("/{scriptId:[0-9]+}/createService")
     public String createService(HttpServletRequest request, @PathVariable Long scriptId)
-            throws IOException, InterruptedException, ExecutionException {
+            throws IOException, InterruptedException {
         Long userId = AuthUtils.getAuthUserId(request);
         scriptService.existsByUserIdAndScriptId(userId, scriptId);
-        return scriptService.createService(scriptId).get();
+        return scriptService.createService(scriptId);
     }
 
     /**
@@ -157,14 +155,13 @@ public class WebUserScriptController {
      * @return 执行结果
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
-     * @throws ExecutionException   ExecutionException
      */
     @PutMapping("/{scriptId:[0-9]+}/removeService")
     public String removeService(HttpServletRequest request, @PathVariable Long scriptId)
-            throws IOException, InterruptedException, ExecutionException {
+            throws IOException, InterruptedException {
         Long userId = AuthUtils.getAuthUserId(request);
         scriptService.existsByUserIdAndScriptId(userId, scriptId);
-        return scriptService.removeService(scriptId).get();
+        return scriptService.removeService(scriptId);
     }
 
     /**
@@ -176,15 +173,14 @@ public class WebUserScriptController {
      * @return 执行结果
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
-     * @throws ExecutionException   ExecutionException
      */
     @PutMapping("/{scriptId:[0-9]+}/updateService")
     public Set<String> updateService(HttpServletRequest request, @PathVariable Long scriptId,
                                      @Validated({UpdateGroup.class}) @RequestBody UpdateServiceDto updateServiceDto)
-            throws IOException, InterruptedException, ExecutionException {
+            throws IOException, InterruptedException {
         Long userId = AuthUtils.getAuthUserId(request);
         scriptService.existsByUserIdAndScriptId(userId, scriptId);
-        return scriptService.updateService(scriptId, updateServiceDto).get();
+        return scriptService.updateService(scriptId, updateServiceDto);
     }
 
 }

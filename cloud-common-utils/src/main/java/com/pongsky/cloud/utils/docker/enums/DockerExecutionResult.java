@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * docker 执行结果
@@ -17,19 +18,26 @@ import java.text.MessageFormat;
 public enum DockerExecutionResult {
 
     /**
+     * 拉取镜像
+     */
+    PULL_IMAGE_RESULT(null, null, null, List.of("No such image", "not found")),
+
+    /**
      * 创建服务
      */
-    CREATE_SERVICE_RESULT("Creating service {0}_{0}", null, null, null),
+    CREATE_SERVICE_RESULT("Creating service {0}_{0}", null, null, List.of()),
 
     /**
      * 删除服务
      */
-    REMOVE_SERVICE_RESULT("Removing service {0}_{0}", null, null, null),
+    REMOVE_SERVICE_RESULT("Removing service {0}_{0}", null, null, List.of()),
 
     /**
      * 更新服务
      */
-    UPDATE_SERVICE_RESULT(null, "{0}_{0}", null, "verify: Service converged");
+    UPDATE_SERVICE_RESULT(null, "{0}_{0}", null, List.of("verify: Service converged")),
+
+    ;
 
     /**
      * 结果
@@ -49,7 +57,23 @@ public enum DockerExecutionResult {
     /**
      * 包含匹配
      */
-    private final String contains;
+    private final List<String> contains;
+
+    /**
+     * 校验拉取镜像结果
+     *
+     * @param cmdResult  指令执行结果
+     * @param repository 镜像
+     * @param tag        标签
+     */
+    public static void validationPullImage(String cmdResult, String repository, String tag) {
+        long count = PULL_IMAGE_RESULT.getContains().stream()
+                .filter(cmdResult::contains)
+                .count();
+        if (count > 0) {
+            throw new RuntimeException("镜像 " + repository + ":" + tag + " 拉取失败: " + cmdResult);
+        }
+    }
 
     /**
      * 校验创建服务结果
@@ -85,7 +109,10 @@ public enum DockerExecutionResult {
      */
     public static void validationUpdateService(String cmdResult, Script script) {
         String start = MessageFormat.format(UPDATE_SERVICE_RESULT.getStart(), script.getServiceName());
-        if (!cmdResult.startsWith(start) || !cmdResult.contains(UPDATE_SERVICE_RESULT.getContains())) {
+        long count = UPDATE_SERVICE_RESULT.getContains().stream()
+                .filter(cmdResult::contains)
+                .count();
+        if (!cmdResult.startsWith(start) || count == 0) {
             throw new RuntimeException("更新服务执行失败: " + cmdResult);
         }
     }

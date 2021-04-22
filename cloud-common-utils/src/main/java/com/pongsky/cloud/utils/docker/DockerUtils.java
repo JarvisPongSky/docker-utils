@@ -75,6 +75,11 @@ public class DockerUtils {
     }
 
     /**
+     * Docker Pull CMD
+     */
+    private static final String PULL_CMD = "docker pull {0}:{1}";
+
+    /**
      * 更新服务
      *
      * @param script     脚本信息
@@ -86,6 +91,8 @@ public class DockerUtils {
      */
     public static Set<String> updateService(Script script, String repository, String tag)
             throws IOException, InterruptedException {
+        DockerExecutionResult.validationPullImage(String.join("\n",
+                runScript(MessageFormat.format(PULL_CMD, repository, tag))), repository, tag);
         Set<String> cmdResults = runScript(MessageFormat.format(script.getUpdateScript(), repository, tag));
         String cmdResult = String.join("\n", cmdResults);
         DockerExecutionResult.validationUpdateService(cmdResult, script);
