@@ -7,7 +7,7 @@ jib {
         tags = ["local-" + version.toString()]
     }
     container {
-        mainClass = "com.pongsky.cloud.UserApplication"
+        mainClass = "com.pongsky.cloud.Application"
         ports = ["8080"]
         jvmFlags = ["-Xmx512M", "-Xms330M", "-Xmn100M",
                     "-XX:MaxDirectMemorySize=64M", "-XX:MetaspaceSize=100M",
