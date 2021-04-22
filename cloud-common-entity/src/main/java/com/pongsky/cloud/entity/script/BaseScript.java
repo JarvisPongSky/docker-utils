@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 /**
@@ -49,6 +48,7 @@ public class BaseScript {
         if (baseStartScript == null) {
             baseStartScript = List.of(
                     "rm -rf " + baseDir + "docker-compose.yml",
+                    "mkdir -p " + dockerComposeContent,
                     "echo \"" + dockerComposeContent + "\" > " + baseDir + "docker-compose.yml"
             );
         }
