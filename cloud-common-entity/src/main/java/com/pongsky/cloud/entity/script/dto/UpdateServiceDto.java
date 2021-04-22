@@ -21,7 +21,7 @@ public class UpdateServiceDto {
      * 镜像
      */
     @NotBlank(groups = {UpdateGroup.class})
-    @Length(max = 30, groups = {UpdateGroup.class})
+    @Length(max = 100, groups = {UpdateGroup.class})
     private String repository;
 
     /**

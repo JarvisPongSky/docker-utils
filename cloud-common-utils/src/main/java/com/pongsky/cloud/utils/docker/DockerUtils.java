@@ -2,6 +2,7 @@ package com.pongsky.cloud.utils.docker;
 
 import com.pongsky.cloud.utils.docker.dto.Script;
 import com.pongsky.cloud.utils.docker.enums.DockerExecutionResult;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class DockerUtils {
         Set<String> result = new LinkedHashSet<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(sis, StandardCharsets.UTF_8))) {
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((StringUtils.isNotBlank(line = br.readLine()))) {
                 result.add(line);
             }
         }

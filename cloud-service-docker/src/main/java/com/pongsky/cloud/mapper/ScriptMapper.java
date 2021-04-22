@@ -159,4 +159,18 @@ public interface ScriptMapper {
     Integer pageCountByUserId(@Param("userId") Long userid,
                               @Param("search") SearchScriptDto searchScriptDto);
 
+    /**
+     * 根据用户ID和服务名称查询脚本ID
+     *
+     * @param userId      用户ID
+     * @param serviceName 服务名称
+     * @return 根据用户ID和服务名称查询脚本ID
+     */
+    @Select("select s.id " +
+            "from `script` s " +
+            "where s.user_id = #{userId} " +
+            "and s.service_name = #{serviceName} ")
+    Optional<Long> findIdByUserIdAndServiceName(@Param("userId") Long userId,
+                                                @Param("serviceName") String serviceName);
+
 }

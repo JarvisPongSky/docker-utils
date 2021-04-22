@@ -60,7 +60,7 @@ public class WebUserScriptController {
             throw new ValidationException("base 文件目录，以 " + Script.BASE_DIR_SUFFIX + " 结尾");
         }
         Long userId = AuthUtils.getAuthUserId(request);
-        scriptService.existsByUserIdAndServiceName(null, userId,  scriptDto.getServiceName());
+        scriptService.existsByUserIdAndServiceName(null, userId, scriptDto.getServiceName());
         scriptService.save(userId, scriptDto);
     }
 
@@ -107,8 +107,11 @@ public class WebUserScriptController {
     @GetMapping
     public PageResponse<ScriptVo> query(HttpServletRequest request, PageQuery pageQuery,
                                         @Validated({SearchGroup.class}) SearchScriptDto searchScriptDto) {
+        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
         Long userId = AuthUtils.getAuthUserId(request);
-        return scriptService.query(userId, pageQuery, searchScriptDto);
+        PageResponse<ScriptVo> scriptVos = scriptService.query(userId, pageQuery, searchScriptDto);
+        scriptVos.getContent().forEach(script -> script.setAutoUpdateUrl(baseUrl, userId, script.getServiceName()));
+        return scriptVos;
     }
 
     /**
@@ -120,9 +123,11 @@ public class WebUserScriptController {
      */
     @GetMapping("/{scriptId:[0-9]+}")
     public ScriptVo query(HttpServletRequest request, @PathVariable Long scriptId) {
+        String baseUrl = request.getRequestURL().toString().replace(request.getRequestURI(), "");
         Long userId = AuthUtils.getAuthUserId(request);
         scriptService.existsByUserIdAndScriptId(userId, scriptId);
-        return scriptService.query(scriptId);
+        ScriptVo script = scriptService.query(scriptId);
+        return script.setAutoUpdateUrl(baseUrl, userId, script.getServiceName());
     }
 
     /**
