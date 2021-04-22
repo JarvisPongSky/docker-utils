@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Set;
 
 /**
  * 自行更新
@@ -41,18 +42,19 @@ public class ApiAutoUpdateController {
      * @param userId      用户ID
      * @param serviceName 服务名称
      * @param info        镜像推送信息
+     * @return 镜像自动更新
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
      */
     @PostMapping("/{userId}/{serviceName}")
-    public void autoUpdate(@PathVariable Long userId,
-                           @PathVariable String serviceName,
-                           @Validated({CreateGroup.class}) @RequestBody AliContainerPushInfo info)
+    public Set<String> autoUpdate(@PathVariable Long userId,
+                                  @PathVariable String serviceName,
+                                  @Validated({CreateGroup.class}) @RequestBody AliContainerPushInfo info)
             throws IOException, InterruptedException {
         String repository = MessageFormat.format(REPOSITORY_ADDRESS, info.getRepository().getRegion(),
                 info.getRepository().getNamespace(), info.getRepository().getName());
         Long scriptId = scriptService.findIdByUserIdAndServiceName(userId, serviceName);
-        scriptService.autoUpdateService(scriptId, repository, info.getPushData().getTag());
+        return scriptService.autoUpdateService(scriptId, repository, info.getPushData().getTag());
     }
 
 }

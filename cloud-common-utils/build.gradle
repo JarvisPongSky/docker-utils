@@ -13,6 +13,7 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     implementation "com.auth0:java-jwt:${jwtVersion}"
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
     implementation "com.alibaba:fastjson:${fastjsonVersion}"
     implementation "javax.servlet:javax.servlet-api:${servletVersion}"
     implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"

@@ -2,6 +2,7 @@ package com.pongsky.cloud.utils.docker;
 
 import com.pongsky.cloud.utils.docker.dto.Script;
 import com.pongsky.cloud.utils.docker.enums.DockerExecutionResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -19,6 +20,7 @@ import java.util.Set;
  * @author pengsenhao
  * @create 2021-04-21
  */
+@Slf4j
 public class DockerUtils {
 
     /**
@@ -30,6 +32,7 @@ public class DockerUtils {
      * @throws InterruptedException InterruptedException
      */
     public static Set<String> runScript(String cmd) throws IOException, InterruptedException {
+        log.info("exec cmd: [{}]", cmd);
         Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", cmd});
         process.waitFor();
         SequenceInputStream sis = new SequenceInputStream(process.getInputStream(), process.getErrorStream());

@@ -18,12 +18,12 @@ import com.pongsky.cloud.utils.docker.DockerUtils;
 import com.pongsky.cloud.utils.snowflake.SnowFlakeUtils;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -211,16 +211,15 @@ public class ScriptService {
      * @throws IOException          IOException
      * @throws InterruptedException InterruptedException
      */
-    @Async
     @Transactional(rollbackFor = Exception.class, readOnly = true)
-    public void autoUpdateService(Long scriptId, String repository, String tag)
+    public Set<String> autoUpdateService(Long scriptId, String repository, String tag)
             throws IOException, InterruptedException {
         ScriptDo scriptDo = scriptMapper.findById(scriptId)
                 .orElseThrow(() -> new DoesNotExistException("脚本信息不存在"));
         if (scriptDo.getIsAutoUpdate() == 0) {
-            return;
+            return Collections.emptySet();
         }
-        DockerUtils.updateService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class),
+        return DockerUtils.updateService(mapperFacade.map(scriptDo, com.pongsky.cloud.utils.docker.dto.Script.class),
                 repository, tag);
     }
 
