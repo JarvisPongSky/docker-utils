@@ -48,7 +48,7 @@ public class BaseScript {
         if (baseStartScript == null) {
             baseStartScript = List.of(
                     "rm -rf " + baseDir + "docker-compose.yml",
-                    "mkdir -p " + dockerComposeContent,
+                    "mkdir -p " + baseDir,
                     "echo \"" + dockerComposeContent + "\" > " + baseDir + "docker-compose.yml"
             );
         }
